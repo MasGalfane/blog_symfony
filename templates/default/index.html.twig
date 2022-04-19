@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des articles{% endblock %}
+
+{% block body %}
+
+    {% include 'menu/_menu.html.twig' %}
+    <h1>Liste des articles </h1>
+
+    {{ articles|taille }}
+    {% set resultat = addition(2, 6) %}
+    <p>le resultat de la fonction calculAdd est de : {{ resultat }}</p>
+
+    <ul>
+        {% for article in articles  %}
+            <li><a href="{{ path('vue_article', { 'id':article['id']}) }}">{{ article['nom'] }}</a></li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
+
+
+
+{#{% block javascripts %}#}
+{#    <script>#}
+{#        alert('Nous sommes dans l index  ')#}
+{#    </script>#}
+{#{% endblock  %}#}
+
+
+
+{#<p>la taille de notre tableau est de : {{ articles|length }}</p> #}{#La taille de notre table d'articles#}
+{#<p>Nous sommes le {{ "now"|date("d/m/Y") }}</p> #}{#ça nous donne la date#}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#Pour modifier#}
+{#{% set  temperature = 3 %}#}
+{#<p>Température: {{ temperature }}</p>#}
+{#{% set  temperature = temperature + 3 %}#}
+{#<p>Température: {{ temperature }}</p>#}
