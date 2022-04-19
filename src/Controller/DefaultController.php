@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Article;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -51,5 +53,23 @@ class DefaultController extends AbstractController
 
         //dump($id); die;//https://127.0.0.1:8000/17
         //On voit qu'il nous dump le 17
+    }
+
+    #[Route("/article/ajouter", name: "ajout_article")]
+    //Là on a notre entité et on aimerait l'enregitrer en BDD on va donc utilisé l'entityManger et on le passe en parametre 
+    public function ajouter(EntityManagerInterface $manager){//Là on a une injection de dépendance nous permet d'injecter des classe à travers des parametres 
+        /* dump($manager);die; */
+
+        $article = new Article();
+
+        $article->setTitle("Titre de l'article");
+        $article->setContent("Ceci est le contenu de l'artcle ");
+        $article->setCreatedAt(new \DateTime());
+
+        $manager->persist($article);
+
+        $manager->flush();
+        die;
+        //dump($article);die;
     }
 }
