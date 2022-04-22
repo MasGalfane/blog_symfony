@@ -21,6 +21,25 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
+    public function findByDateCreatedAt(\DateTime $date){
+        $qb = $this->createQueryBuilder('a');
+            $qb->select('a');
+            $qb->where('a.createdAt = :date');
+            $qb->setParameter('date', $date->format('Y-m-d'));      //ça n'affiche pas la date
+        return $qb->getQuery()->getResult();
+    }
+
+    //Là on veut que ce qui est dans title
+    public function findByTitle($title){
+        $qb = $this->createQueryBuilder('a');
+        $qb->select('a');
+        $qb->where('a.title = :title');
+        $qb->setParameter('title', $title);
+        $qb->setMaxResults(1);
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
     /**
      * @throws ORMException
      * @throws OptimisticLockException

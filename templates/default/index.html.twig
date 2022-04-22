@@ -8,16 +8,38 @@
     <h1>Liste des articles </h1>
 
     {{ articles|taille }}
-    {% set resultat = addition(2, 6) %}
-    <p>le resultat de la fonction calculAdd est de : {{ resultat }}</p>
 
     <ul>
         {% for article in articles  %}
-            <li><a href="{{ path('vue_article', { 'id':article['id']}) }}">{{ article['nom'] }}</a></li>
+            <li><a href="{{ path('vue_article', { 'id':article.id}) }}">{{ article.title }}</a></li>
         {% endfor %}
     </ul>
 
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -35,7 +57,8 @@
 
 
 
-
+{#    {% set resultat = addition(2, 6) %}#}
+{#<p>le resultat de la fonction calculAdd est de : {{ resultat }}</p>#}
 
 
 
