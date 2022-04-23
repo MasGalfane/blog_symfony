@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Comment;
+use App\Form\ArticleType;
+use App\Form\CommentType;
 use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -31,11 +35,29 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'vue_article', requirements: ['id' => '\d+'], methods: ['GET'] )]     // Visualiser unn article avec une route dynamique avec un parametre//Là on veut que des entiers qui sont positifs avec le requirements et on choisit la méthode
-    public function vueArticle( Article $article){
+    #[Route('/{id}', name: 'vue_article', requirements: ['id' => '\d+'], methods: ['GET', 'POST'] )]     // Visualiser unn article avec une route dynamique avec un parametre//Là on veut que des entiers qui sont positifs avec le requirements et on choisit la méthode
+    public function vueArticle( Article $article, Request $request, EntityManagerInterface $manager){        //Grace au params converter l'id qu'on va lui passer en parametre est automatiquement transformer en aricle si on lui passe l'id 51 il va nous recupérer l'article 51
+
+        $comment = new Comment();
+        $comment->setArticle($article);
+
+        $form =$this->createForm(CommentType::class, $comment);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+//            dump($comment);die;
+
+            $manager->persist($comment);
+            $manager->flush();
+
+            return $this->redirectToRoute('vue_article', ['id' => $article->getId()]);
+        }
+
 
         return $this->render('default/vue.html.twig', [
-            'article' => $article
+            'article' => $article,
+            'form' => $form->createView()
         ]);
 
 
@@ -45,42 +67,37 @@ class DefaultController extends AbstractController
     }
 
     #[Route("/article/ajouter", name: "ajout_article" )]
-    public function ajouter(Request $request, CategoryRepository $categoryRepository, EntityManagerInterface $manager){            //Là on a notre entité et on aimerait l'enregitrer en BDD on va donc utilisé l'entityManger et on le passe en parametre //Là on a une injection de dépendance nous permet d'injecter des classe à travers des parametres
+    public function ajouter(Request $request, EntityManagerInterface $manager){            //Là on a notre entité et on aimerait l'enregitrer en BDD on va donc utilisé l'entityManger et on le passe en parametre //Là on a une injection de dépendance nous permet d'injecter des classe à travers des parametres
 //    dump($request); die;
-        $form = $this->createFormBuilder()
-        ->add('title', TextType::class, [
-            'label' => "Article title"
-            ]
-        )
-        ->add('content', TextareaType::class)
-        ->add('createdAt', DateType::class, [         // changer date creationDate
-            'widget' => 'single_text' //La on utilise un widget on peut changer par choice ou text
-            ]
-        )
-            ->getForm();
+//        $form = $this->createFormBuilder()
+//        ->add('title', TextType::class, [
+//            'label' => "Article title"
+//            ]
+//        )
+//        ->add('content', TextareaType::class)
+//        ->add('createdAt', DateType::class, [         // changer date creationDate
+//            'widget' => 'single_text' //La on utilise un widget on peut changer par choice ou text
+//            ]
+//        )
+//            ->getForm();
+        //Dès qu'on arrive dans notre formulaire
 
-        $form->handleRequest($request);  //Grace à cette fonction on lui dit d'aller attraper la requite qui est faite, quans on soumet le formulaire ça va faire une requete POST en envoyant les données
+        $article = new Article();  //On va créer un nouveau article
 
-        if ($form->isSubmitted() && $form->isValid()) {
-//            dump($form->getData()); die;
-            $article = new Article();
-            $article->setTitle($form->get('title')->getData());
-            $article->setContent($form->get('content')->getData());
-            $article->setCreatedAt($form->get('createdAt')->getData());
-//        dump($article);die;
+        $form = $this->createForm(ArticleType::class, $article); //cette nouvelle article on va lu donner au formulaire et le formulaire va maper automatiquement les champs avec l'netité qu'on va lu passer
 
-            $category = $categoryRepository->findOneBy([
-                'name' => 'Sport'
-            ]);
-//            dump($category);die;
-            $article->addCategory($category);
+        $form->handleRequest($request);  //Grace à cette fonction on lui dit d'aller attraper la requite qui est faite, quand on soumet le formulaire ça va faire une requete POST en envoyant les données
 
-            $manager->persist($article);            //On a une nouvelle objet on le persist
+        if ($form->isSubmitted() && $form->isValid()) {   //On verifit si le champ est soumet et bien valide
+//            dump($article); die;
 
+            $manager->persist($article);
             $manager->flush();
 
             return $this->redirectToRoute('liste_articles');
+
         }
+
         return $this->render('default/add.html.twig', [
             'form' => $form->createView()
             ]

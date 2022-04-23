@@ -26,6 +26,11 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private $article;
 
+    public function __construct()
+    {
+        $this->dateComment = new \DateTime();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
