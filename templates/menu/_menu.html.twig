@@ -9,14 +9,13 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-      <ul class="navbar-nav">
-        <li class="nav-item">
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">{# navbarNavDropdown #}
+        <div class="navbar-nav">
           <a class="nav-link" href="{{ path('liste_articles') }}">Accueil</a>
+          <a class="nav-link" href="{{ path('ajout_article') }}">Ajout Article </a>
+        </div>
         </li>
-        
-        </li>
-      </ul>
+
     </div>
   </div>
 </nav>
