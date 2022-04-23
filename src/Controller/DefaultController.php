@@ -8,14 +8,17 @@ use App\Form\ArticleType;
 use App\Form\CommentType;
 use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
+use App\Service\VerificationComment;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\This;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
@@ -36,7 +39,9 @@ class DefaultController extends AbstractController
     }
 
     #[Route('/{id}', name: 'vue_article', requirements: ['id' => '\d+'], methods: ['GET', 'POST'] )]     // Visualiser unn article avec une route dynamique avec un parametre//Là on veut que des entiers qui sont positifs avec le requirements et on choisit la méthode
-    public function vueArticle( Article $article, Request $request, EntityManagerInterface $manager){        //Grace au params converter l'id qu'on va lui passer en parametre est automatiquement transformer en aricle si on lui passe l'id 51 il va nous recupérer l'article 51
+    public function vueArticle( Article $article, Request $request, EntityManagerInterface $manager, VerificationComment $verifyService, FlashBagInterface $session){        //Grace au params converter l'id qu'on va lui passer en parametre est automatiquement transformer en aricle si on lui passe l'id 51 il va nous recupérer l'article 51
+
+//        dump($verifyService); die;
 
         $comment = new Comment();
         $comment->setArticle($article);
@@ -48,10 +53,16 @@ class DefaultController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()){
 //            dump($comment);die;
 
-            $manager->persist($comment);
-            $manager->flush();
+            if ($verifyService->commentNoAuthorize($comment) === false){
+                $manager->persist($comment);
+                $manager->flush();
 
-            return $this->redirectToRoute('vue_article', ['id' => $article->getId()]);
+                return $this->redirectToRoute('vue_article', ['id' => $article->getId()]);
+            }
+            else{
+                $session->add("danger", "Le commentaire contient un mot interdit");
+            }
+
         }
 
 
@@ -67,21 +78,11 @@ class DefaultController extends AbstractController
     }
 
     #[Route("/article/ajouter", name: "ajout_article" )]
-    public function ajouter(Request $request, EntityManagerInterface $manager){            //Là on a notre entité et on aimerait l'enregitrer en BDD on va donc utilisé l'entityManger et on le passe en parametre //Là on a une injection de dépendance nous permet d'injecter des classe à travers des parametres
-//    dump($request); die;
-//        $form = $this->createFormBuilder()
-//        ->add('title', TextType::class, [
-//            'label' => "Article title"
-//            ]
-//        )
-//        ->add('content', TextareaType::class)
-//        ->add('createdAt', DateType::class, [         // changer date creationDate
-//            'widget' => 'single_text' //La on utilise un widget on peut changer par choice ou text
-//            ]
-//        )
-//            ->getForm();
-        //Dès qu'on arrive dans notre formulaire
+    public function ajouter(Request $request, EntityManagerInterface $manager, LoggerInterface $logger){            //Là on a notre entité et on aimerait l'enregitrer en BDD on va donc utilisé l'entityManger et on le passe en parametre //Là on a une injection de dépendance nous permet d'injecter des classe à travers des parametres
 
+//        dump($logger); die;
+
+        //Dès qu'on arrive dans notre formulaire
         $article = new Article();  //On va créer un nouveau article
 
         $form = $this->createForm(ArticleType::class, $article); //cette nouvelle article on va lu donner au formulaire et le formulaire va maper automatiquement les champs avec l'netité qu'on va lu passer
