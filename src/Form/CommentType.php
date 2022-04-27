@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use VictorPrdh\RecaptchaBundle\Form\ReCaptchaType;
 
 class CommentType extends AbstractType
 {
@@ -19,6 +20,7 @@ class CommentType extends AbstractType
             ->add('author', null, [
                 'label' => "Votre nom"
             ])
+            ->add("captcha", ReCaptchaType::class)
             ->add('condition', CheckboxType::class, [
                 'mapped' => false
             ])
