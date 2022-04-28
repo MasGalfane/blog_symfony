@@ -30,6 +30,9 @@ class Article
     #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'articles')]
     private $categories;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private $state;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -130,6 +133,18 @@ class Article
         if ($this->categories->removeElement($category)) {
             $category->removeArticle($this);
         }
+
+        return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(string $state): self
+    {
+        $this->state = $state;
 
         return $this;
     }

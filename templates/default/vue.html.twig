@@ -7,7 +7,10 @@
 {% block body %}
 {#    {% include 'menu/_menu.html.twig' %}#}
 
-    <h1>{{ article.title }}</h1>
+    <h1>{{ article.title }}</h1> 
+    <p>
+        <a href="{{path('edite_article', {'id':article.id}) }}" class="btn btn-info">Editer</a>
+    </p>
     <small>{{ article.createdAt|date('d/m/Y') }}</small>  {#  A trouver pk ça ne ça n'affiche pas la date  #}
     <p>{{ article.content }}</p>
 
@@ -35,11 +38,11 @@
 
             {{ form_label(form.author, null, {'label_attr' : {'class':'form-label'}}) }}
             {{ form_widget(form.author, {"attr" : {'class' :'form-control'}}) }}
-
-            <div class="form-check">
+            <br>
+           {#  <div class="form-check">
                 {{ form_widget(form.condition, {'attr':{'class':'form-check-input'}}) }}
                 {{ form_label(form.condition, null, {'label_attr':{'class':'form-check-label'}}) }}
-            </div>
+            </div> #}
 
             {{ form_row(form.captcha) }}
             {{ form_errors(form.captcha) }}

@@ -5,7 +5,8 @@
 {% block body %}
 
 {#    {% include 'menu/_menu.html.twig' %}#}
-    <h1>Liste des articles </h1>
+    {# ça permet d'afficher Liste dess articles brouillon #}
+    <h1>Liste des articles{% if brouillon %} brouillon{% endif %}  </h1>
 
     {{ articles|taille }}
 

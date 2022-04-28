@@ -13,7 +13,7 @@ class VerificationComment{
         ];
 
         foreach ($unauthorized as $word){                               //On boucle sur ce tableau
-            if (strpos($comment->getContent(), $word)){            //On verifie si le mot n'est pas dans le contenu
+            if (strpos($comment->getContent(), $word)){                 //On verifie si le mot n'est pas dans le contenu
                 return true;                                            //Si c'est la cas on retourne true
             }
         }

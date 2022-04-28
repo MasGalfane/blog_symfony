@@ -21,9 +21,9 @@ class CommentType extends AbstractType
                 'label' => "Votre nom"
             ])
             ->add("captcha", ReCaptchaType::class)
-            ->add('condition', CheckboxType::class, [
+            /* ->add('condition', CheckboxType::class, [
                 'mapped' => false
-            ])
+            ]) */
         ;
     }
 
