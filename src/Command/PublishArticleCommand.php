@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Repository\ArticleRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,13 +19,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class PublishArticleCommand extends Command
 {
-    /* On a ajouter ça aussi */
+    /* On a ajouter un attribut $articleRepository  */
     private $articleRepository;
 
-    /* ça on a ajouter pour lu mettre la repository parce q'on ne pourras pas l'injecter directement */
-    public function __construct(ArticleRepository $articleRepository, string $name = null)
+    /* il nous faut le repository et on ne peut pas l'injecter directement dans execute et on va devoir passer par un constucteur */
+    public function __construct(ArticleRepository $articleRepository, EntityManagerInterface $manager, string $name = null) //On va lui dire qu'on a besoin d'un parametre supplementaire qui est Article repository
     {
         $this->articleRepository = $articleRepository;
+        $this->manager = $manager;
         parent::__construct($name);
     }
 
@@ -41,9 +43,19 @@ class PublishArticleCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         
-        dump($this->articleRepository);die;
+    // dump($this->articleRepository);die;
+        //On recupere nos articles à publier
+        $articles = $this->articleRepository->findBy([
+            'state' => 'a publier'
+        ]);
+        //On boucle dessus à chaque fois on les passe à publier
+        foreach ($articles  as $article){
+            $article->setState('publier');
+        }
 
-        $io->success('Articles publiés.');
+        $this->manager->flush();
+
+        $io->success(count($articles).' article(s) publié(s).');
 
         return Command::SUCCESS;
     }
