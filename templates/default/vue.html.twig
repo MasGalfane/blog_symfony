@@ -7,10 +7,12 @@
 {% block body %}
 {#    {% include 'menu/_menu.html.twig' %}#}
 
-    <h1>{{ article.title }}</h1> 
-    <p>
-        <a href="{{path('edite_article', {'id':article.id}) }}" class="btn btn-info">Editer</a>
-    </p>
+    <h1>{{ article.title }}</h1>
+    {% if is_granted('ROLE_ADMIN') %}
+        <p>
+            <a href="{{path('edite_article', {'id':article.id}) }}" class="btn btn-info">Editer</a>
+        </p>
+    {% endif %}
     <small>{{ article.createdAt|date('d/m/Y') }}</small>  {#  A trouver pk ça ne ça n'affiche pas la date  #}
     <p>{{ article.content }}</p>
 

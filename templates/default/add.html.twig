@@ -3,13 +3,19 @@
 {% block title %}Ajouter un articles{% endblock %}
 
 {% block body %}
-
-    {{ form_start(form) }}
-
-        {{ form_errors(form) }}
+    {% if not form.vars.valid %} {#  ça permet de savoir si notre formulaire est valider ou pas? s'il est valide ça nous donne true dans notre controller ça passe par valide et ça retourne la vue  #}
+        {{ form_start(form, {'attr':{'class':'was-validated'}}) }}
+    {% else %}{# Dans ce cas on lui affiche une erreur  #}
+         {{ form_start(form) }}{# Quand le formulaire est valide #}
+    {% endif %}
 
         {{ form_label(form.title, null, {'label_attr': {'class':'form-label'}}) }}
         {{ form_widget(form.title, {'attr': {'class':'form-control' }}) }}
+
+        <div class="invalid-feedback">
+            {{ form_errors(form.title) }}
+        </div>
+
 
         {{ form_label(form.content, null, {'label_attr': {'class':'form-label'}}) }}
         {{ form_widget(form.content, {'attr': {'class':'form-control' }}) }}

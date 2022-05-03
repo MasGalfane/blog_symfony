@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\ArticleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,7 +16,14 @@ class Article
     #[ORM\Column(type: 'integer')]
     private $id;
 
+
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\Length(
+        min: 5,
+        max: 40,
+        minMessage: "Le titre doit faire au moins {{ limit }} caractères",
+        maxMessage: "le titre doit faire au moins {{ limit }} caractères "
+    )]
     private $title;
 
     #[ORM\Column(type: 'text')]

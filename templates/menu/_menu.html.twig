@@ -30,8 +30,18 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <div class="navbar-nav">
           <a class="nav-link" href="{{ path('liste_articles') }}">Accueil</a>
-          <a class="nav-link" href="{{ path('ajout_article') }}">Ajout Article </a>
-          <a class="nav-link" href="{{ path('article_brouillon') }}">Les brouillons </a>
+          {% if is_granted('ROLE_ADMIN') %} {#  Si l'utilisateur à le rôle admin on liui affiche ses deux route #}
+            <a class="nav-link" href="{{ path('ajout_article') }}">Ajout Article </a>
+            <a class="nav-link" href="{{ path('article_brouillon') }}">Les brouillons </a>
+          {% endif %}
+          {% if is_granted('IS_AUTHENTIFICATED_FULLY') %}{#  s'il est connecter on lui mett le bouton de deconnexion#}
+            <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion </a>
+          {% else %}{# s'il n'est pas connecter on lui met le bouton de connexion #}
+            <a class="nav-link" href="{{ path('app_login') }}">Connexion </a>
+          {% endif %}
+
+
+
         </div>
 
     </div>
