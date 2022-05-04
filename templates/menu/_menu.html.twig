@@ -34,9 +34,9 @@
             <a class="nav-link" href="{{ path('ajout_article') }}">Ajout Article </a>
             <a class="nav-link" href="{{ path('article_brouillon') }}">Les brouillons </a>
           {% endif %}
-          {% if is_granted('IS_AUTHENTIFICATED_FULLY') %}{#  s'il est connecter on lui mett le bouton de deconnexion#}
+          {% if is_granted('IS_AUTHENTICATED_FULLY') %}   {#  s'il est connecter on lui mett le bouton de deconnexion#}
             <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion </a>
-          {% else %}{# s'il n'est pas connecter on lui met le bouton de connexion #}
+          {% else %}    {# s'il n'est pas connecter on lui met le bouton de connexion #}
             <a class="nav-link" href="{{ path('app_login') }}">Connexion </a>
           {% endif %}
 
