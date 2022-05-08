@@ -43,7 +43,7 @@ class PublishArticleCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         
-    // dump($this->articleRepository);die;
+        // dump($this->articleRepository);die;
         //On recupere nos articles à publier
         $articles = $this->articleRepository->findBy([
             'state' => 'a publier'
