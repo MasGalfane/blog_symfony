@@ -9,7 +9,8 @@ class VerificationComment{
         $unauthorized = [                                               //On a declarer un tableau de mots qui n'est pas autorisé
             "mauvais",
             "merde",
-            "pourri"
+            "pourri",
+            "con"
         ];
 
         foreach ($unauthorized as $word){                               //On boucle sur ce tableau
